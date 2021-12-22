@@ -35,13 +35,3 @@ scrape_configs:
       - targets: [ "nginx-exporter:9113" ]
         labels:
           alias: nginx
-
-  # Example job for node_exporter
-  # - job_name: 'node_exporter'
-  #   static_configs:
-  #     - targets: ['node_exporter:9100']
-
-  # Example job for cadvisor
-  # - job_name: 'cadvisor'
-  #   static_configs:
-  #     - targets: ['cadvisor:8080']
