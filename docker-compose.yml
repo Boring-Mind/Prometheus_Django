@@ -4,38 +4,86 @@ volumes:
   prometheus-data: {}
   grafana-data: {}
 
+networks:
+  main:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
 services:
   backend:
     build:
       context: django_app
-    ports:
-      - "8000:8000"
+    container_name: backend
+#    ports:
+#      - "8000:8000"
     env_file:
       - .env
-    command: python3 -m gunicorn --bind 0.0.0.0:8000 --workers 2 app.wsgi:application
+    networks:
+      - main
+    command: sh -c "python3 manage.py migrate && python3 -m gunicorn --bind 0.0.0.0:8000 --workers 2 app.wsgi:application"
     restart: unless-stopped
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    depends_on:
+      - backend
+    ports:
+      - "8000:80"
+    networks:
+      - main
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter
+    depends_on:
+      - nginx
+    networks:
+      main:
+        ipv4_address: 172.20.0.125
+    command:
+      - -nginx.scrape-uri=http://nginx/nginx_status
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus
 #    ports:
 #      - "9090:9090"
     volumes:
       - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infrastructure/prometheus/django.rules:/etc/prometheus/django.rules
       - ./infrastructure/prometheus/web.yml:/etc/prometheus/web.yml
+      - ./infrastructure/prometheus/consoles:/etc/prometheus/consoles
       - prometheus-data:/prometheus
+    networks:
+      - main
     restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--web.config.file=/etc/prometheus/web.yml"
+      - "--web.console.templates=/etc/prometheus/consoles/"
+      - "--web.console.libraries=/etc/prometheus/console_libraries/"
 
   grafana:
     image: grafana/grafana-oss:latest
-    container_name: grafana
     ports:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
+      # Importing provision settings to set folder where dashboards are located
+      - ./infrastructure/grafana/provisioning.yml:/var/lib/grafana/provisioning/dashboards/main.yml:ro
+      # Importing Grafana dashboards
+      # WARNING: if you want to change this setting,
+      # please make changes to ./infrastructure/grafana/provisioning.yml as well
+      - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards/
     env_file:
       - .env
+    environment:
+      # Setting folder for Grafana dashboard
+      - GF_PATHS_PROVISIONING=/var/lib/grafana/provisioning/
+    networks:
+      - main
     restart: unless-stopped

@@ -1,3 +1,3 @@
 basic_auth_users:
     # Please use utils.password_generator.py script to generate admin password
-    admin: $2b$12$Z.DiNw1Sw81381vBOpErROeQeJOvfchpWcbt9uQ8k1fukt0qtOwjS
+    admin: $2b$12$rjJCv05hV9qsQ4o5gw7HiuMn8dypoR5H5haQ.I7I64qKjI3/q5zOW
