@@ -129,6 +129,14 @@ LOGGING = {
     },
 }
 
+# Prometheus settings
+# We have 4 buckets: 0-200 ms, 201-400 ms, 401-600 ms, 601-800 ms and 801+ ms
+# That means that we treat all requests' latencies from 0 to 600 ms as fast ones.
+# Requests that are slower than 600 ms should be optimized
+# We take into account requests that are slower than 600 ms to find out endpoints
+# that are close to optimal latency value
+PROMETHEUS_LATENCY_BUCKETS = (0.2, 0.4, 0.6, 0.8, float("inf"))
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
