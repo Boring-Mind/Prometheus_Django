@@ -59,7 +59,8 @@ services:
       - ./infrastructure/prometheus/consoles:/etc/prometheus/consoles
       - prometheus-data:/prometheus
     networks:
-      - main
+      main:
+        ipv4_address: 172.20.0.126
     restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"

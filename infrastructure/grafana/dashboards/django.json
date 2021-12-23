@@ -24,7 +24,7 @@
   "gnetId": 7996,
   "graphTooltip": 0,
   "id": 5,
-  "iteration": 1640255220909,
+  "iteration": 1640264133665,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -401,6 +401,83 @@
       "type": "stat"
     },
     {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "Down"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "Up"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "noValue": "Non-responding",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 24,
+      "options": {
+        "colWidth": 0.9,
+        "legend": {
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "qhtcPhT7z"
+          },
+          "exemplar": true,
+          "expr": "django_health{}",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "Health",
+          "refId": "A"
+        }
+      ],
+      "title": "Django health",
+      "type": "status-history"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -415,7 +492,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 2
+        "y": 5
       },
       "hiddenSeries": false,
       "id": 2,
@@ -499,7 +576,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 2
+        "y": 5
       },
       "hiddenSeries": false,
       "id": 4,
@@ -653,7 +730,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "GET /slow_view, le: +Inf"
+                  "GET /health_check:health_check_home, le: +Inf"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -676,7 +753,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 14
       },
       "id": 19,
       "options": {
@@ -702,7 +779,7 @@
           "refId": "A"
         }
       ],
-      "title": "Slow requests (>=601 ms)",
+      "title": "Slow requests (>600 ms)",
       "type": "timeseries"
     },
     {
@@ -722,7 +799,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 14
       },
       "hiddenSeries": false,
       "id": 7,
@@ -810,7 +887,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 20
+        "y": 23
       },
       "hiddenSeries": false,
       "id": 9,
@@ -933,7 +1010,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 20
+        "y": 23
       },
       "id": 21,
       "options": {
@@ -977,7 +1054,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 20
+        "y": 23
       },
       "hiddenSeries": false,
       "id": 11,
@@ -1051,13 +1128,15 @@
   "refresh": "10s",
   "schemaVersion": 34,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "django"
+  ],
   "templating": {
     "list": [
       {
         "current": {
           "isNone": true,
-          "selected": false,
+          "selected": true,
           "text": "None",
           "value": ""
         },
@@ -1088,7 +1167,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -1119,6 +1198,6 @@
   "timezone": "",
   "title": "Django Prometheus",
   "uid": "O6v4rMpiz",
-  "version": 19,
+  "version": 24,
   "weekStart": ""
 }
