@@ -31,13 +31,23 @@ services:
       context: .
       dockerfile: Dockerfile.redis
     env_file:
-      - redis.env
+      - infrastructure/redis/.env
     networks:
       - main
     volumes:
       - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis_template.conf
       - ./infrastructure/redis/redis-entrypoint.sh:/usr/local/redis-entrypoint.sh
     command: sh /usr/local/redis-entrypoint.sh
+    restart: unless-stopped
+
+  redis-exporter:
+    image: oliver006/redis_exporter
+    env_file:
+      - infrastructure/redis-exporter/.env
+    networks:
+      - main
+    environment:
+      - REDIS_ADDR=redis://redis:6379
     restart: unless-stopped
 
   nginx:
@@ -97,7 +107,7 @@ services:
       # please make changes to ./infrastructure/grafana/provisioning.yml as well
       - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards/
     env_file:
-      - .env
+      - infrastructure/grafana/.env
     environment:
       # Setting folder for Grafana dashboard
       - GF_PATHS_PROVISIONING=/var/lib/grafana/provisioning/

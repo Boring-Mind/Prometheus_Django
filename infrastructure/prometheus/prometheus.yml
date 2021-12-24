@@ -30,6 +30,12 @@ scrape_configs:
         labels:
           alias: backend
 
+  - job_name: 'redis'
+    static_configs:
+      - targets: [ "redis-exporter:9121" ]
+        labels:
+          alias: redis
+
   - job_name: 'nginx'
     static_configs:
       - targets: [ "nginx-exporter:9113" ]
