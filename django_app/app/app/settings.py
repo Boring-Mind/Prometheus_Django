@@ -97,7 +97,11 @@ DATABASES = {
 # Cache
 CACHES = {
     "default": {
-        "BACKEND": "django_prometheus.cache.backends.locmem.LocMemCache",
+        "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
+        "LOCATION": (
+            "redis://"
+            f"{config('REDIS_USERNAME')}:{config('REDIS_PASSWORD')}@redis:6379"
+        ),
         "TIMEOUT": 60,
     }
 }

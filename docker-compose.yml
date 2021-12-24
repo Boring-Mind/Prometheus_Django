@@ -18,10 +18,26 @@ services:
 #    ports:
 #      - "8000:8000"
     env_file:
-      - .env
+      - django_app/.env
     networks:
       - main
+    depends_on:
+      - redis
     command: sh -c "python3 manage.py migrate && python3 -m gunicorn --bind 0.0.0.0:8000 --workers 2 app.wsgi:application"
+    restart: unless-stopped
+
+  redis:
+    build:
+      context: .
+      dockerfile: Dockerfile.redis
+    env_file:
+      - redis.env
+    networks:
+      - main
+    volumes:
+      - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis_template.conf
+      - ./infrastructure/redis/redis-entrypoint.sh:/usr/local/redis-entrypoint.sh
+    command: sh /usr/local/redis-entrypoint.sh
     restart: unless-stopped
 
   nginx:
